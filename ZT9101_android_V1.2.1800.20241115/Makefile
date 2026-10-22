@@ -31,8 +31,8 @@
   CT                       ?= n
   CONFIG_DEBUG_LEVEL        = 0
   CONFIG_DRIVER_VER         = V1.2.xxx.xxxxxxxx
-  CONFIG_MODULE_IMPORT_NS   = n
-  CONFIG_FW_FILE            = y
+  CONFIG_MODULE_IMPORT_NS   = y
+  CONFIG_FW_FILE            = n
   CONFIG_STA_AND_AP_MODE    = n
   CONFIG_TX_SOFT_AGG        = n
   CONFIG_RX_SOFT_AGG        = n
