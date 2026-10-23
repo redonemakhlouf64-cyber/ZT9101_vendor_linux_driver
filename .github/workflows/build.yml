@@ -8,20 +8,20 @@ jobs:
       - name: Install Build Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential cpio curl flex git kmod libelf-dev libssl-dev lld llvm clang gcc-aarch64-linux-gnu
-      - name: Download Kernel Headers Package
+          sudo apt-get install -y bc bison build-essential cpio curl flex git kmod libelf-dev libssl-dev lld llvm clang gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+      - name: Download and Prepare Kernel Headers
         run: |
           mkdir -p kernel-5.15 && cd kernel-5.15
           curl -sL https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.tar.xz | tar -xJ --strip-components=1
-          make ARCH=arm64 defconfig
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
           scripts/config --disable CONFIG_MODVERSIONS
           scripts/config --disable CONFIG_MODULE_SIG
           scripts/config --disable CONFIG_MODULE_SIG_FORCE
-          make ARCH=arm64 modules_prepare
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=aarch64-linux-gnu-gcc modules_prepare
       - name: Compile ZT9101 Driver
         run: |
           cd ZT9101_android_V1.2.1800.20241115
-          make ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$(pwd)/../kernel-5.15 modules
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=aarch64-linux-gnu-gcc KSRC=$(pwd)/../kernel-5.15 modules
       - uses: actions/upload-artifact@v4
         with:
           name: zt9101-driver-ko
