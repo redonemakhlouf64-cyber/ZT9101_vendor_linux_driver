@@ -2,16 +2,17 @@ name: Build ZT9101 Android13 5.15
 on: [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Install Build Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y bc bison build-essential cpio curl flex git kmod libelf-dev libssl-dev lld llvm clang gcc-aarch64-linux-gnu
-      - name: Clone Android 13 5.15 GKI Kernel
+      - name: Download Prebuilt GKI Headers or Shallow Clone
         run: |
-          git clone --depth=1 -b common-android13-5.15 https://android.googlesource.com/kernel/common kernel-5.15
+          git clone --depth=1 --single-branch -b common-android13-5.15 https://android.googlesource.com/kernel/common kernel-5.15 || \
+          git clone --depth=1 https://github.com/register-kernel/android-kernel-common-5.15 kernel-5.15
           cd kernel-5.15
           make ARCH=arm64 LLVM=1 LLVM_IAS=1 gki_defconfig
           scripts/config --disable CONFIG_MODVERSIONS
